@@ -23,8 +23,8 @@ def test_ranker_single_paper():
     ]
     rankings = ranker.rank(papers, "deep learning healthcare")
     assert len(rankings) == 1
-    assert rankings[0]["rank_position"] == 1
-    assert 0 <= rankings[0]["overall_score"] <= 1
+    assert rankings[0].rank_position == 1
+    assert 0 <= rankings[0].overall_score <= 1
 
 
 def test_ranker_ordering():
@@ -34,4 +34,4 @@ def test_ranker_ordering():
         Paper(title="High cited", source=PaperSource.ARXIV, year=2024, citations_count=500),
     ]
     rankings = ranker.rank(papers, "test")
-    assert rankings[0]["title"] == "High cited" or rankings[0]["overall_score"] >= rankings[1]["overall_score"]
+    assert rankings[0].overall_score >= rankings[1].overall_score

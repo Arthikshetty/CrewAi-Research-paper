@@ -37,16 +37,21 @@ class PDFExtractionTool(BaseTool):
         resp = requests.get(pdf_url, timeout=60, stream=True)
         resp.raise_for_status()
 
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as tmp:
+        tmp = tempfile.NamedTemporaryFile(suffix=".pdf", delete=False)
+        try:
             for chunk in resp.iter_content(chunk_size=8192):
                 tmp.write(chunk)
             tmp.flush()
+            tmp.close()
 
             doc = fitz.open(tmp.name)
             text_parts = []
             for page in doc:
                 text_parts.append(page.get_text())
             doc.close()
+        finally:
+            import os
+            os.unlink(tmp.name)
 
         full_text = "\n".join(text_parts)
         full_text = clean_text(full_text)

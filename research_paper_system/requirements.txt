@@ -25,15 +25,6 @@ plotly>=5.18.0
 # PDF Processing
 pymupdf>=1.23.0
 
-# Token Counting
-tiktoken>=0.5.0
-
-# Elsevier APIs (Scopus + ScienceDirect)
-elsapy>=0.5.0
-
-# CrossRef API
-habanero>=1.2.0
-
 # Google Scholar (unofficial)
 scholarly>=1.7.0
 
@@ -45,4 +36,3 @@ thefuzz[speedup]>=0.20.0
 
 # Testing
 pytest>=7.0.0
-pytest-asyncio>=0.23.0

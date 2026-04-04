@@ -80,7 +80,7 @@ class CoreSearchTool(BaseTool):
                 year=year,
                 source=PaperSource.CORE,
                 doi=item.get("doi"),
-                url=item.get("downloadUrl") or item.get("sourceFulltextUrls", [""])[0] if item.get("sourceFulltextUrls") else "",
+                url=item.get("downloadUrl") or (item.get("sourceFulltextUrls", [""])[0] if item.get("sourceFulltextUrls") else ""),
                 pdf_url=item.get("downloadUrl"),
                 open_access=True,
                 journal_name=item.get("publisher"),

@@ -150,12 +150,15 @@ class GraphService:
     def _run_pagerank(self, results: List[BasePaperResult]):
         with self._driver.session() as session:
             # Check if GDS is available by trying the pageRank call
+            # First create a projected graph, then run PageRank
+            session.run(
+                """
+                CALL gds.graph.project('papers', 'Paper', 'CITES')
+                """
+            )
             records = session.run(
                 """
-                CALL gds.pageRank.stream({
-                    nodeProjection: 'Paper',
-                    relationshipProjection: 'CITES'
-                })
+                CALL gds.pageRank.stream('papers')
                 YIELD nodeId, score
                 WITH gds.util.asNode(nodeId) AS paper, score
                 ORDER BY score DESC
@@ -167,6 +170,12 @@ class GraphService:
             for result in results:
                 if result.paper_id in pr_scores:
                     result.pagerank_score = pr_scores[result.paper_id]
+
+            # Clean up projected graph
+            try:
+                session.run("CALL gds.graph.drop('papers')")
+            except Exception:
+                pass
 
     def find_top_authors(self, limit: int = 10) -> List[TopAuthorResult]:
         results = []
