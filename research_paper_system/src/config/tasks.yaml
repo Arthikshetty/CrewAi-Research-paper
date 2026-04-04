@@ -1,0 +1,128 @@
+discover_papers:
+  description: >
+    Search ALL available academic sources for research papers related to '{topic}'.
+    Focus on papers from the last {years} years. Retrieve at least {min_papers} papers.
+    Search each source that is available and collect results. The sources include
+    ArXiv, Semantic Scholar, IEEE Xplore, Scopus, ScienceDirect, CrossRef, OpenAlex,
+    CORE, PubMed, DBLP, and Google Scholar. After collecting from all sources,
+    the results will be automatically deduplicated.
+  expected_output: >
+    A comprehensive list of research papers with titles, authors, year, source,
+    citation counts, abstracts, and DOIs. Papers should cover the topic from
+    multiple perspectives and sources.
+  agent: paper_search_agent
+
+summarize_papers:
+  description: >
+    For each discovered paper, extract and summarize:
+    (1) Key contributions — what is novel or significant
+    (2) Methodology used — techniques, algorithms, approach
+    (3) Main findings — results and conclusions
+    (4) Limitations — explicitly stated weaknesses or constraints
+    If a paper has a PDF available, use it for deeper analysis. Otherwise, use the abstract.
+    Focus on accuracy and conciseness.
+  expected_output: >
+    A list of structured summaries, one per paper, each containing key contributions,
+    methodology, findings, and limitations. Each summary should be 150-300 words.
+  agent: paper_summarization_agent
+  context:
+    - discover_papers
+
+extract_limitations:
+  description: >
+    For each discovered paper, carefully extract ALL specific limitations. Categorize each
+    limitation as: METHODOLOGICAL, DATA, SCOPE, GENERALIZABILITY, REPRODUCIBILITY,
+    SCALABILITY, or OTHER. Rate severity from 1 (minor) to 5 (critical). Include a
+    direct evidence quote from the paper where possible.
+  expected_output: >
+    A list of structured limitations per paper, each with: paper title, limitation
+    description, category, severity rating (1-5), and supporting evidence.
+  agent: limitation_extractor_agent
+  context:
+    - summarize_papers
+
+analyze_citations:
+  description: >
+    Build a citation network from the discovered papers and perform these analyses:
+
+    (1) BEST BASE PAPER: Identify the single most-referenced foundational paper — the
+    paper that is cited by the highest number of other discovered papers. Explain WHY
+    this paper is foundational (its key contribution that others build upon).
+
+    (2) TOP AUTHORS ON TOPIC: Find the top 10 authors who have published the most
+    research papers on '{topic}'. For each author provide: name, affiliation, total
+    paper count, total citations, h-index, their most-cited paper, their most recent
+    paper, and year range they've been active.
+
+    (3) Research Clusters: Identify key research sub-communities.
+
+    (4) Publication Trends: Papers per year timeline.
+  expected_output: >
+    A comprehensive citation analysis report containing:
+    - The #1 best base paper with justification for why it's foundational
+    - Top 5 runner-up base papers
+    - Top 10 authors with publication metrics
+    - Research cluster descriptions
+    - Year-by-year publication trend data
+  agent: citation_network_analyzer_agent
+  context:
+    - discover_papers
+
+detect_gaps:
+  description: >
+    Based on the paper summaries, extracted limitations, and citation network analysis,
+    identify research gaps:
+    (1) Topics mentioned frequently but not deeply explored
+    (2) Methodological gaps — techniques not yet applied to this domain
+    (3) Data gaps — datasets or benchmarks that are missing
+    (4) Areas where recent progress has stalled
+    (5) Cross-domain opportunities — techniques from other fields not yet applied
+    Provide confidence scores and supporting evidence for each gap.
+  expected_output: >
+    A list of 5-10 identified research gaps, each with: description, gap type
+    (methodological/topical/application/data/theoretical), confidence score (0-1),
+    supporting evidence papers, and suggested research directions.
+  agent: research_gap_detector_agent
+  context:
+    - summarize_papers
+    - extract_limitations
+    - analyze_citations
+
+generate_problem_statements:
+  description: >
+    Based on the identified research gaps and extracted limitations, generate {num_ideas}
+    well-structured academic problem statements. Each statement should include:
+    (1) Title — concise research problem title
+    (2) Background — context and motivation from existing literature
+    (3) Problem Description — clear articulation of what needs to be solved
+    (4) Objectives — specific, measurable research objectives (3-5)
+    (5) Scope — what's included and excluded
+    (6) Significance — why this research matters
+    Link each problem statement to the specific gaps and limitations it addresses.
+  expected_output: >
+    A list of structured problem statements, each with title, background, problem
+    description, objectives, scope, significance, and links to source gaps/limitations.
+  agent: problem_statement_generator_agent
+  context:
+    - detect_gaps
+    - extract_limitations
+    - summarize_papers
+
+generate_ideas:
+  description: >
+    Based on the identified research gaps, limitations, and current research landscape,
+    generate {num_ideas} novel research ideas. For each idea provide:
+    (1) Title — compelling research idea name
+    (2) Description — detailed explanation of the proposed research
+    (3) Motivation — why this is worth pursuing
+    (4) Related papers — which existing papers this builds upon
+    (5) Feasibility score (1-10) — how practical this is to implement
+    Be creative but grounded in the evidence. Cross-domain ideas are encouraged.
+  expected_output: >
+    A list of novel research ideas, each with title, description, motivation,
+    related papers, and feasibility score.
+  agent: idea_generation_agent
+  context:
+    - detect_gaps
+    - generate_problem_statements
+    - summarize_papers
