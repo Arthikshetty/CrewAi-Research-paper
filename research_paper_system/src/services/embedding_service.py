@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from typing import List, Optional
+from typing import List
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +31,6 @@ def embed_texts(texts: List[str], batch_size: int = 32) -> np.ndarray:
     model = _get_model()
     embeddings = model.encode(texts, normalize_embeddings=True, batch_size=batch_size, show_progress_bar=False)
     return np.array(embeddings)
-
-
-def embed_paper(title: str, abstract: Optional[str] = None) -> np.ndarray:
-    text = title
-    if abstract:
-        text = f"{title} {abstract}"
-    return embed_text(text)
 
 
 def embed_query(query: str) -> np.ndarray:

@@ -69,6 +69,22 @@ class GraphService:
                         paper_id=paper.id,
                     )
 
+                # Create Topic/keyword nodes and ABOUT relationships
+                keywords = paper.keywords or []
+                for keyword in keywords[:5]:
+                    keyword_clean = keyword.strip().lower()
+                    if keyword_clean:
+                        session.run(
+                            """
+                            MERGE (t:Topic {name: $name})
+                            WITH t
+                            MATCH (p:Paper {paper_id: $paper_id})
+                            MERGE (p)-[:ABOUT]->(t)
+                            """,
+                            name=keyword_clean,
+                            paper_id=paper.id,
+                        )
+
                 # Create co-authorship edges
                 if len(paper.authors) > 1:
                     for i, a1 in enumerate(paper.authors):
@@ -122,16 +138,32 @@ class GraphService:
                 """,
                 limit=limit,
             )
-            for record in records:
+            for i, record in enumerate(records):
+                cited_by = record["cited_by_titles"][:10]
+                in_deg = record["in_degree"]
+                title = record["title"]
+                year = record["year"]
+
+                # Generate why_base_paper justification
+                if i == 0:
+                    why = (f"\"{title}\" is the most foundational paper in the "
+                           f"discovered set — cited by {in_deg} other papers. "
+                           f"Published in {year or 'N/A'}, it established key ideas "
+                           f"that subsequent work builds upon.")
+                else:
+                    why = (f"Cited by {in_deg} discovered papers, "
+                           f"\"{title}\" is a highly influential work in this area.")
+
                 results.append(BasePaperResult(
                     paper_id=record["id"],
-                    title=record["title"],
-                    total_incoming_citations=record["in_degree"],
+                    title=title,
+                    total_incoming_citations=in_deg,
                     total_global_citations=record["global_citations"] or 0,
-                    pagerank_score=record["in_degree"],  # Simplified; real PageRank below
-                    referenced_by=record["cited_by_titles"][:10],
-                    year=record["year"],
+                    pagerank_score=in_deg,  # Simplified; real PageRank below
+                    referenced_by=cited_by,
+                    year=year,
                     source=record["source"] or "",
+                    why_base_paper=why,
                 ))
 
         # Try PageRank if GDS is available
@@ -149,8 +181,13 @@ class GraphService:
 
     def _run_pagerank(self, results: List[BasePaperResult]):
         with self._driver.session() as session:
-            # Check if GDS is available by trying the pageRank call
-            # First create a projected graph, then run PageRank
+            # Drop pre-existing projection from a prior failed run
+            try:
+                session.run("CALL gds.graph.drop('papers', false)")
+            except Exception:
+                pass
+
+            # Create a projected graph, then run PageRank
             session.run(
                 """
                 CALL gds.graph.project('papers', 'Paper', 'CITES')
@@ -190,11 +227,14 @@ class GraphService:
                      max(p.year) AS last_year
                 ORDER BY paper_count DESC, total_cites DESC
                 LIMIT $limit
+                WITH a, paper_count, total_cites, first_year, last_year,
+                     [p IN papers | p.title] AS paper_titles,
+                     [p IN papers | p.citation_count] AS paper_citations,
+                     [p IN papers | coalesce(p.year, 0)] AS paper_years
                 RETURN a.name AS name, a.orcid AS orcid,
                        paper_count, total_cites,
                        first_year, last_year,
-                       [p IN papers | p.title] AS paper_titles,
-                       [p IN papers | p.citation_count] AS paper_citations
+                       paper_titles, paper_citations, paper_years
                 """,
                 limit=limit,
             )
@@ -214,16 +254,86 @@ class GraphService:
                 if first_year and last_year:
                     year_range = f"{first_year}-{last_year}"
 
+                # Find most recent paper (sort by year descending)
+                recent_paper = None
+                paper_years = record.get("paper_years") or []
+                if paper_titles and paper_years:
+                    pairs = list(zip(paper_years, paper_titles))
+                    pairs.sort(key=lambda x: x[0], reverse=True)
+                    recent_paper = pairs[0][1]
+
                 results.append(TopAuthorResult(
                     author_name=record["name"],
                     orcid=record["orcid"],
                     total_papers_on_topic=record["paper_count"],
                     total_citations=record["total_cites"] or 0,
                     most_cited_paper=most_cited,
+                    recent_paper=recent_paper,
                     year_range_active=year_range,
                 ))
 
+        # Enrich with collaboration count
+        self._enrich_authors_collaboration(results)
+        # Enrich with expertise keywords from graph
+        self._enrich_authors_expertise(results)
+        # Enrich h-index and affiliations from Semantic Scholar
+        self._enrich_authors_from_api(results)
+
         return results
+
+    def _enrich_authors_collaboration(self, authors: List[TopAuthorResult]):
+        """Add collaboration_count from co-authorship edges."""
+        with self._driver.session() as session:
+            for author in authors:
+                result = session.run(
+                    """
+                    MATCH (a:Author {name: $name})-[:COLLABORATES_WITH]-(other:Author)
+                    RETURN count(DISTINCT other) AS collab_count
+                    """,
+                    name=author.author_name,
+                )
+                record = result.single()
+                if record:
+                    author.collaboration_count = record["collab_count"]
+
+    def _enrich_authors_expertise(self, authors: List[TopAuthorResult]):
+        """Extract expertise keywords from Topic nodes connected to author's papers."""
+        with self._driver.session() as session:
+            for author in authors:
+                records = session.run(
+                    """
+                    MATCH (a:Author {name: $name})-[:AUTHORED]->(p:Paper)-[:ABOUT]->(t:Topic)
+                    RETURN t.name AS topic, count(p) AS relevance
+                    ORDER BY relevance DESC
+                    LIMIT 8
+                    """,
+                    name=author.author_name,
+                )
+                author.expertise_keywords = [r["topic"] for r in records]
+
+    def _enrich_authors_from_api(self, authors: List[TopAuthorResult]):
+        """Enrich with h-index and affiliations from Semantic Scholar Author API."""
+        import requests
+
+        for author in authors:
+            try:
+                resp = requests.get(
+                    "https://api.semanticscholar.org/graph/v1/author/search",
+                    params={"query": author.author_name, "fields": "name,hIndex,affiliations", "limit": 1},
+                    timeout=10,
+                )
+                if resp.status_code == 200:
+                    data = resp.json()
+                    results_list = data.get("data", [])
+                    if results_list:
+                        match = results_list[0]
+                        if match.get("hIndex"):
+                            author.h_index = match["hIndex"]
+                        if match.get("affiliations"):
+                            author.affiliations = [a for a in match["affiliations"] if a]
+            except Exception as e:
+                logger.debug(f"Could not enrich author {author.author_name}: {e}")
+                continue
 
     def get_citation_network(self, paper_title: str, depth: int = 2) -> Dict:
         with self._driver.session() as session:

@@ -1,7 +1,7 @@
 import logging
 import threading
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,7 @@ class ProgressTracker:
 
     def reset(self):
         with self._lock:
+            self._callbacks.clear()
             self._steps = [
                 ProgressStep("Searching ArXiv"),
                 ProgressStep("Searching Semantic Scholar"),

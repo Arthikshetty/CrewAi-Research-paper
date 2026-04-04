@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 from src.models.paper import Paper
 from src.services import embedding_service
 
@@ -50,20 +50,6 @@ class VectorStore:
             paper = self._papers[idx]
             results.append((paper, float(score)))
         return results
-
-    def find_similar(self, paper_id: str, top_k: int = 5) -> List[Tuple[Paper, float]]:
-        paper = self._get_paper_by_id(paper_id)
-        if not paper:
-            return []
-        query = f"{paper.title} {paper.abstract or ''}"
-        results = self.search(query, top_k + 1)
-        return [(p, s) for p, s in results if p.id != paper_id][:top_k]
-
-    def _get_paper_by_id(self, paper_id: str) -> Optional[Paper]:
-        for p in self._papers:
-            if p.id == paper_id:
-                return p
-        return None
 
     @property
     def paper_count(self) -> int:

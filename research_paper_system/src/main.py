@@ -21,13 +21,37 @@ logger = logging.getLogger(__name__)
 
 def main():
     parser = argparse.ArgumentParser(description="Research Paper Discovery & Analysis System")
-    parser.add_argument("topic", type=str, help="Research topic to analyze")
+    parser.add_argument("topic", type=str, nargs="?", default=None, help="Research topic to analyze")
     parser.add_argument("--years", type=int, default=5, help="Number of years to search (default: 5)")
     parser.add_argument("--min-papers", type=int, default=30, help="Minimum papers to find (default: 30)")
     parser.add_argument("--num-ideas", type=int, default=5, help="Number of ideas to generate (default: 5)")
     parser.add_argument("--output", type=str, default="results.json", help="Output file path")
+    parser.add_argument("--demo", action="store_true", help="Run in demo mode with pre-computed sample data")
 
     args = parser.parse_args()
+
+    # ---------- Demo mode ----------
+    if args.demo:
+        demo_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data", "demo", "demo_results.json",
+        )
+        if not os.path.exists(demo_path):
+            print("ERROR: demo_results.json not found. Run the full pipeline first.")
+            sys.exit(1)
+        with open(demo_path, "r", encoding="utf-8") as f:
+            results = json.load(f)
+        out = args.output
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+        print(f"Demo results written to {out}")
+        print(f"Topic: {results.get('topic', '?')}")
+        print(f"Papers: {results.get('paper_count', 0)}")
+        sys.exit(0)
+
+    # ---------- Normal mode ----------
+    if not args.topic:
+        parser.error("topic is required unless --demo is specified")
 
     logger.info(f"Starting analysis for topic: {args.topic}")
     logger.info(f"Parameters: years={args.years}, min_papers={args.min_papers}, num_ideas={args.num_ideas}")
