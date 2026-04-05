@@ -21,6 +21,7 @@ streamlit>=1.30.0
 pyvis>=0.3.2
 networkx>=3.0
 plotly>=5.18.0
+matplotlib>=3.8.0
 
 # PDF Processing
 pymupdf>=1.23.0

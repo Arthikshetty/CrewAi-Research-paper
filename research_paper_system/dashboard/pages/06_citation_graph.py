@@ -191,10 +191,18 @@ with tab3:
             """)
 
             with tempfile.NamedTemporaryFile(suffix=".html", delete=False, mode="w", encoding="utf-8") as f:
-                net.save_graph(f.name)
-                with open(f.name, "r", encoding="utf-8") as html_file:
+                temp_path = f.name
+                net.save_graph(temp_path)
+            
+            try:
+                with open(temp_path, "r", encoding="utf-8") as html_file:
                     html_content = html_file.read()
-                os.unlink(f.name)
+            finally:
+                try:
+                    os.unlink(temp_path)
+                except:
+                    pass
+            
             st.components.v1.html(html_content, height=670)
 
             # Legend
