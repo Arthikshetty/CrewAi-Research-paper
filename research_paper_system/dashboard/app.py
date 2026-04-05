@@ -25,8 +25,14 @@ st.markdown("""
 
 # === Sidebar ===
 with st.sidebar:
-    st.markdown("## ⚙️ Configuration")
-    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+    st.markdown("""
+    <div style="text-align:center; padding: 1rem 0 0.5rem 0;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔬</div>
+        <div style="font-size: 1rem; font-weight: 700; color: #ffffff; letter-spacing: 1px;">RESEARCH AI</div>
+        <div style="font-size: 0.7rem; color: #7c7ca0; letter-spacing: 2px; text-transform: uppercase;">Discovery &amp; Analysis</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown('<hr style="border-color: rgba(255,255,255,0.08); margin: 0.75rem 0;">', unsafe_allow_html=True)
 
     topic = st.text_input("🔎 Research Topic", placeholder="e.g., Federated Learning for Healthcare")
 
@@ -54,7 +60,7 @@ with st.sidebar:
     st.markdown("")
     run_button = st.button("🚀 Run Analysis", type="primary", use_container_width=True)
 
-    st.markdown("---")
+    st.markdown('<hr style="border-color: rgba(255,255,255,0.08); margin: 0.75rem 0;">', unsafe_allow_html=True)
     demo_button = st.button("🎮 Load Demo Data", use_container_width=True,
                             help="Load pre-computed results to explore the dashboard without API keys")
 

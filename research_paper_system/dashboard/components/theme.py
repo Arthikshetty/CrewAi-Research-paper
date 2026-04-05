@@ -246,15 +246,201 @@ def inject_custom_css():
 
     /* === Sidebar Styling === */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #fafbfc 0%, #f0f2f5 100%);
+        background: linear-gradient(180deg, #0f0c29 0%, #1a1a3e 40%, #24243e 100%) !important;
+        border-right: 1px solid rgba(255,255,255,0.06);
     }
-    [data-testid="stSidebar"] .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #4361ee 0%, #3651d4 100%);
-        border: none;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        border-radius: 8px;
+    [data-testid="stSidebar"] * {
+        color: #e0e0e0 !important;
+    }
+
+    /* Sidebar brand logo area */
+    [data-testid="stSidebar"] [data-testid="stSidebarHeader"] {
+        background: transparent;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Navigation links */
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] {
+        padding: 0.5rem 0.75rem;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a {
+        display: flex;
+        align-items: center;
         padding: 0.6rem 1rem;
+        margin: 3px 0;
+        border-radius: 10px;
+        text-decoration: none !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a span {
+        text-transform: capitalize !important;
+        font-weight: 500 !important;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.3px;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover {
+        background: rgba(67, 97, 238, 0.15) !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a:hover span {
+        color: #7c9aff !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-selected="true"],
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a.active {
+        background: linear-gradient(135deg, rgba(67,97,238,0.25) 0%, rgba(54,81,212,0.18) 100%) !important;
+        border-left: 3px solid #4361ee;
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a[aria-selected="true"] span,
+    [data-testid="stSidebar"] [data-testid="stSidebarNav"] a.active span {
+        color: #ffffff !important;
+        font-weight: 600 !important;
+    }
+
+    /* Sidebar headings */
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4 {
+        color: #ffffff !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+    [data-testid="stSidebar"] h2 {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem !important;
+    }
+    [data-testid="stSidebar"] h4 {
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: #8888aa !important;
+        margin-top: 1rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Sidebar section dividers */
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(255,255,255,0.08) !important;
+        margin: 0.75rem 0 !important;
+    }
+
+    /* Sidebar text inputs */
+    [data-testid="stSidebar"] .stTextInput > div > div {
+        background: rgba(255,255,255,0.06) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        border-radius: 10px !important;
+        color: #ffffff !important;
+        transition: all 0.2s ease;
+    }
+    [data-testid="stSidebar"] .stTextInput > div > div:focus-within {
+        border-color: #4361ee !important;
+        box-shadow: 0 0 0 2px rgba(67,97,238,0.2) !important;
+        background: rgba(255,255,255,0.08) !important;
+    }
+    [data-testid="stSidebar"] .stTextInput input {
+        color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] .stTextInput input::placeholder {
+        color: rgba(255,255,255,0.35) !important;
+    }
+    [data-testid="stSidebar"] .stTextInput label {
+        color: #b0b0cc !important;
+        font-weight: 500 !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* Sidebar sliders */
+    [data-testid="stSidebar"] .stSlider label {
+        color: #b0b0cc !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] div[role="slider"] {
+        background: #4361ee !important;
+        border-color: #4361ee !important;
+    }
+
+    /* Sidebar checkboxes */
+    [data-testid="stSidebar"] .stCheckbox label {
+        color: #c8c8e0 !important;
+        font-size: 0.84rem !important;
+    }
+    [data-testid="stSidebar"] .stCheckbox [data-testid="stCheckbox"] span[role="checkbox"][aria-checked="true"] {
+        background-color: #4361ee !important;
+        border-color: #4361ee !important;
+    }
+
+    /* Sidebar expander */
+    [data-testid="stSidebar"] .streamlit-expanderHeader {
+        background: rgba(255,255,255,0.04) !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        color: #c8c8e0 !important;
+        font-weight: 500 !important;
+        font-size: 0.88rem !important;
+    }
+    [data-testid="stSidebar"] .streamlit-expanderHeader:hover {
+        background: rgba(255,255,255,0.08) !important;
+    }
+    [data-testid="stSidebar"] .streamlit-expanderContent {
+        background: rgba(255,255,255,0.02) !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        border-top: none !important;
+        border-radius: 0 0 10px 10px !important;
+    }
+
+    /* Primary button (Run Analysis) */
+    [data-testid="stSidebar"] .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%) !important;
+        border: none !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px;
+        border-radius: 10px !important;
+        padding: 0.7rem 1rem !important;
+        font-size: 0.9rem !important;
+        box-shadow: 0 4px 15px rgba(67,97,238,0.3) !important;
+        transition: all 0.3s ease !important;
+        color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+        box-shadow: 0 6px 25px rgba(67,97,238,0.5) !important;
+        transform: translateY(-1px);
+    }
+
+    /* Secondary buttons (Demo, Load Last) */
+    [data-testid="stSidebar"] .stButton > button:not([kind="primary"]) {
+        background: rgba(255,255,255,0.06) !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
+        border-radius: 10px !important;
+        color: #c8c8e0 !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        padding: 0.55rem 1rem !important;
+        transition: all 0.25s ease !important;
+    }
+    [data-testid="stSidebar"] .stButton > button:not([kind="primary"]):hover {
+        background: rgba(255,255,255,0.12) !important;
+        border-color: rgba(255,255,255,0.2) !important;
+        color: #ffffff !important;
+    }
+
+    /* Sidebar scrollbar */
+    [data-testid="stSidebar"]::-webkit-scrollbar {
+        width: 4px;
+    }
+    [data-testid="stSidebar"]::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    [data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.1);
+        border-radius: 4px;
+    }
+    [data-testid="stSidebar"]::-webkit-scrollbar-thumb:hover {
+        background: rgba(255,255,255,0.2);
     }
 
     /* === Info Banner === */
