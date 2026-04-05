@@ -98,6 +98,7 @@ SOURCES = {
 class Settings:
     # LLM
     openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""))
+    openai_api_base: str = field(default_factory=lambda: os.getenv("OPENAI_API_BASE", ""))
     llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "gpt-4o-mini"))
     llm_model_summarization: str = field(
         default_factory=lambda: os.getenv("LLM_MODEL_SUMMARIZATION", "gpt-4o")

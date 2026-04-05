@@ -4,6 +4,7 @@ import time as _time
 from typing import List
 import yaml
 from crewai import Agent, Crew, Process, Task
+from langchain_openai import ChatOpenAI
 from src.config.settings import settings
 from src.models.paper import Paper
 from src.services.graph_service import GraphService
@@ -126,6 +127,16 @@ class ResearchPaperCrew:
             elif "idea" in key:
                 tools = [self.semantic_search_tool]
 
+            _model = settings.llm_model_summarization if "summarization" in key else settings.llm_model
+            if settings.openai_api_base:
+                _llm = ChatOpenAI(
+                    model=_model,
+                    api_key=settings.openai_api_key,
+                    base_url=settings.openai_api_base,
+                )
+            else:
+                _llm = _model
+
             agents[key] = Agent(
                 role=cfg["role"],
                 goal=cfg["goal"],
@@ -133,7 +144,7 @@ class ResearchPaperCrew:
                 tools=tools,
                 verbose=cfg.get("verbose", True),
                 allow_delegation=cfg.get("allow_delegation", False),
-                llm=settings.llm_model_summarization if "summarization" in key else settings.llm_model,
+                llm=_llm,
             )
         return agents
 
