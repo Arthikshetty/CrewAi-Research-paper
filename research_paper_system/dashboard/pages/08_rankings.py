@@ -108,7 +108,7 @@ with tab2:
         legend=dict(orientation="h", yanchor="bottom", y=1.02),
         xaxis_title="Weighted Score",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     # Radar chart for top 5
     st.markdown("### 🎯 Radar Comparison (Top 5)")

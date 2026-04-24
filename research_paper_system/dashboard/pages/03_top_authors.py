@@ -113,7 +113,7 @@ with tab2:
         }
         for i, a in enumerate(top_authors, 1)
     ])
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width='stretch', hide_index=True)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 

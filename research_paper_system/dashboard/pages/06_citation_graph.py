@@ -90,7 +90,7 @@ with tab2:
                       color_discrete_sequence=px.colors.qualitative.Set3,
                       hole=0.4)
         fig3.update_layout(height=400, margin=dict(l=0, r=0, t=40, b=0))
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(fig3, width='stretch')
 
     with c2:
         # Source bar chart
