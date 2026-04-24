@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import {
-  LayoutDashboard,
+  Home,
   Search,
-  Award,
+  Star,
   Users,
   BarChart3,
-  Network,
+  Share2,
   FileText,
   Lightbulb,
-  AlertCircle,
+  Puzzle,
   ChevronLeft,
   ChevronRight,
   Sparkles,
@@ -19,9 +19,9 @@ const MENU_SECTIONS = [
   {
     header: "Main",
     items: [
-      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "dashboard", label: "Dashboard", icon: Home },
       { id: "search", label: "Search", icon: Search },
-      { id: "best-papers", label: "Best Papers", icon: Award },
+      { id: "best-papers", label: "Best Papers", icon: Star },
     ],
   },
   {
@@ -29,7 +29,7 @@ const MENU_SECTIONS = [
     items: [
       { id: "top-authors", label: "Top Authors", icon: Users },
       { id: "rankings", label: "Rankings", icon: BarChart3 },
-      { id: "citation-graph", label: "Citation Graph", icon: Network },
+      { id: "citation-graph", label: "Citation Graph", icon: Share2 },
     ],
   },
   {
@@ -37,7 +37,7 @@ const MENU_SECTIONS = [
     items: [
       { id: "summaries", label: "Summaries", icon: FileText },
       { id: "ideas", label: "Ideas", icon: Lightbulb },
-      { id: "problem-statements", label: "Problem Statements", icon: AlertCircle },
+      { id: "problem-statements", label: "Problem Statements", icon: Puzzle },
     ],
   },
 ];
@@ -54,26 +54,35 @@ function MenuItem({ item, active, collapsed, onClick }) {
         aria-label={item.label}
         aria-current={isActive ? "page" : undefined}
         className={[
-          "relative flex items-center w-full rounded-xl transition-all duration-300 ease-in-out",
+          "relative flex items-center w-full rounded-xl",
+          "transition-all duration-300 ease-in-out",
           collapsed ? "justify-center px-2 py-3" : "px-3 py-2.5 gap-3",
           isActive
-            ? "bg-gradient-to-r from-violet-500/25 via-fuchsia-500/15 to-transparent text-white font-semibold shadow-[0_0_20px_rgba(168,85,247,0.25)]"
-            : "text-slate-300 hover:text-white hover:bg-white/5 hover:scale-[1.03]",
+            ? "bg-gradient-to-r from-indigo-500/30 via-violet-500/20 to-fuchsia-500/10 " +
+              "text-white font-semibold " +
+              "shadow-[0_0_10px_rgba(99,102,241,0.6)]"
+            : "text-gray-400 hover:text-white hover:bg-white/5 hover:scale-[1.05]",
         ].join(" ")}
       >
-        {/* Active left indicator */}
+        {/* Active left indicator bar */}
         {isActive && (
           <span
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-1 rounded-r-full bg-gradient-to-b from-fuchsia-400 to-violet-500 shadow-[0_0_10px_rgba(217,70,239,0.8)]"
             aria-hidden="true"
+            className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-1 rounded-r-full
+                       bg-gradient-to-b from-indigo-400 via-violet-500 to-fuchsia-500
+                       shadow-[0_0_10px_rgba(139,92,246,0.8)]"
           />
         )}
 
+        {/* Icon */}
         <Icon
+          size={collapsed ? 20 : 18}
+          strokeWidth={1.75}
           className={[
-            "flex-shrink-0 transition-transform duration-300",
-            collapsed ? "h-5 w-5" : "h-[18px] w-[18px]",
-            isActive ? "text-fuchsia-300" : "text-slate-400 group-hover:text-violet-300",
+            "flex-shrink-0 transition-all duration-300",
+            isActive
+              ? "text-violet-300 drop-shadow-[0_0_6px_rgba(167,139,250,0.8)]"
+              : "text-gray-400 group-hover:text-white group-hover:scale-110",
           ].join(" ")}
         />
 
@@ -89,7 +98,7 @@ function MenuItem({ item, active, collapsed, onClick }) {
           className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50
                      whitespace-nowrap rounded-md bg-slate-900/95 backdrop-blur px-2.5 py-1.5
                      text-xs font-medium text-white shadow-lg ring-1 ring-white/10
-                     opacity-0 group-hover:opacity-100 translate-x-[-4px] group-hover:translate-x-0
+                     opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0
                      transition-all duration-200"
         >
           {item.label}
@@ -105,12 +114,12 @@ function Section({ section, active, collapsed, onClick, showDivider }) {
     <div>
       {showDivider && (
         <div
-          className="mx-3 my-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
           aria-hidden="true"
+          className="mx-3 my-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
         />
       )}
       {!collapsed ? (
-        <p className="px-4 pt-2 pb-2 text-[10px] font-bold tracking-[0.2em] text-slate-400/80 uppercase">
+        <p className="px-4 pt-2 pb-2 text-[10px] font-bold tracking-[0.2em] text-gray-500 uppercase">
           {section.header}
         </p>
       ) : (
@@ -143,9 +152,7 @@ export default function Sidebar() {
         "relative h-screen flex flex-col",
         "transition-all duration-300 ease-in-out",
         collapsed ? "w-20" : "w-[260px]",
-        // Gradient background — dark navy → indigo → violet (reduced blue)
         "bg-gradient-to-b from-[#0b0b1f] via-[#1a1340] to-[#2a1050]",
-        // Glassmorphism + soft edges
         "backdrop-blur-xl border-r border-white/10",
         "shadow-[4px_0_30px_rgba(0,0,0,0.35)]",
         "rounded-r-2xl",
@@ -168,12 +175,12 @@ export default function Sidebar() {
         ].join(" ")}
       >
         <div
-          className="flex items-center justify-center h-10 w-10 rounded-xl
-                     bg-gradient-to-br from-violet-500 to-fuchsia-500
-                     shadow-[0_0_20px_rgba(168,85,247,0.45)] ring-1 ring-white/15"
           aria-hidden="true"
+          className="flex items-center justify-center h-10 w-10 rounded-xl
+                     bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500
+                     shadow-[0_0_20px_rgba(139,92,246,0.5)] ring-1 ring-white/15"
         >
-          <Sparkles className="h-5 w-5 text-white" />
+          <Sparkles size={20} strokeWidth={2} className="text-white" />
         </div>
 
         {!collapsed && (
@@ -181,21 +188,24 @@ export default function Sidebar() {
             onClick={() => setCollapsed(true)}
             aria-label="Collapse sidebar"
             className="flex items-center justify-center h-8 w-8 rounded-lg
-                       text-slate-400 hover:text-white hover:bg-white/10
+                       text-gray-400 hover:text-white hover:bg-white/10
                        transition-all duration-200"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft size={16} />
           </button>
         )}
       </div>
 
-      {/* Divider under header */}
-      <div className="mx-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      {/* Header divider */}
+      <div
+        aria-hidden="true"
+        className="mx-3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+      />
 
-      {/* Nav sections */}
+      {/* Navigation */}
       <nav
-        className="relative flex-1 overflow-y-auto py-3 scrollbar-thin scrollbar-thumb-white/10"
         aria-label="Sidebar navigation"
+        className="relative flex-1 overflow-y-auto py-3"
       >
         {MENU_SECTIONS.map((section, idx) => (
           <Section
@@ -216,10 +226,10 @@ export default function Sidebar() {
             onClick={() => setCollapsed(false)}
             aria-label="Expand sidebar"
             className="flex items-center justify-center h-9 w-9 rounded-xl
-                       bg-white/5 text-slate-300 hover:text-white hover:bg-white/10
+                       bg-white/5 text-gray-300 hover:text-white hover:bg-white/10
                        ring-1 ring-white/10 transition-all duration-200"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight size={16} />
           </button>
         </div>
       )}
@@ -227,7 +237,7 @@ export default function Sidebar() {
       {/* Footer accent bar */}
       <div
         aria-hidden="true"
-        className="relative h-1 w-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 rounded-br-2xl"
+        className="relative h-1 w-full bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 rounded-br-2xl"
       />
     </aside>
   );
