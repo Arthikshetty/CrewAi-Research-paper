@@ -25,15 +25,13 @@ st.markdown("""
 
 # === Sidebar ===
 with st.sidebar:
+    # Logo icon only (no title text)
     st.markdown("""
-    <div style="text-align:center; padding: 1rem 0 0.5rem 0;">
-        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔬</div>
-        <div style="font-size: 1rem; font-weight: 700; color: #ffffff; letter-spacing: 1px;">RESEARCH AI</div>
-        <div style="font-size: 0.7rem; color: #7c7ca0; letter-spacing: 2px; text-transform: uppercase;">Discovery &amp; Analysis</div>
-    </div>
+    <div class="sidebar-logo-chip">✨</div>
     """, unsafe_allow_html=True)
-    st.markdown('<hr style="border-color: rgba(255,255,255,0.08); margin: 0.75rem 0;">', unsafe_allow_html=True)
+    st.markdown('<hr>', unsafe_allow_html=True)
 
+    st.markdown("#### Configure")
     topic = st.text_input("🔎 Research Topic", placeholder="e.g., Federated Learning for Healthcare")
 
     with st.expander("🎛️ Advanced Settings", expanded=False):
@@ -41,7 +39,7 @@ with st.sidebar:
         min_papers = st.slider("Min papers per source", 5, 50, 20)
         num_ideas = st.slider("Ideas to generate", 1, 10, 5)
 
-    st.markdown("#### 📚 Sources")
+    st.markdown("#### Sources")
     col_s1, col_s2 = st.columns(2)
     with col_s1:
         src_arxiv = st.checkbox("ArXiv", value=True)
@@ -57,10 +55,9 @@ with st.sidebar:
         src_sd = st.checkbox("ScienceDirect", value=True)
         src_gs = st.checkbox("Google Scholar", value=False)
 
-    st.markdown("")
+    st.markdown("#### Actions")
     run_button = st.button("🚀 Run Analysis", type="primary", width='stretch')
 
-    st.markdown('<hr style="border-color: rgba(255,255,255,0.08); margin: 0.75rem 0;">', unsafe_allow_html=True)
     demo_button = st.button("🎮 Load Demo Data", width='stretch',
                             help="Load pre-computed results to explore the dashboard without API keys")
 
@@ -71,6 +68,9 @@ with st.sidebar:
                               help="Reload results from your most recent analysis")
     else:
         load_last = False
+
+    # Footer accent bar (gradient)
+    st.markdown('<div class="sidebar-accent-bar"></div>', unsafe_allow_html=True)
 
 # === Demo Mode ===
 if demo_button:
