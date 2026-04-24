@@ -106,4 +106,4 @@ if len(best_papers) > 1:
     fig.add_trace(go.Bar(name="PageRank ×100", x=names, y=[bp["pagerank_score"] * 100 for bp in best_papers], marker_color="#a55eea"))
     fig.update_layout(barmode="group", height=400, margin=dict(l=0, r=0, t=20, b=0), xaxis_tickangle=-20,
                        legend=dict(orientation="h", yanchor="bottom", y=1.02))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')

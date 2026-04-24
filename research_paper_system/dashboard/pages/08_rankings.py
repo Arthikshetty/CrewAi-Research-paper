@@ -76,7 +76,7 @@ with tab1:
                 .background_gradient(subset=["Recency"], cmap="Greens")
                 .format({"Overall": "{:.3f}", "Citation": "{:.2f}", "Recency": "{:.2f}",
                          "Relevance": "{:.2f}", "Source Auth.": "{:.2f}", "Method.": "{:.2f}"}),
-        use_container_width=True,
+        width='stretch',
         hide_index=True,
     )
 
@@ -133,7 +133,7 @@ with tab2:
         height=500,
         margin=dict(l=40, r=40, t=20, b=20),
     )
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width='stretch')
 
 with tab3:
     # Detailed cards for top 10
@@ -161,4 +161,4 @@ with tab3:
             fig3 = px.bar(sdf, x="Contribution", y="Signal", orientation="h",
                          color="Signal", color_discrete_sequence=["#4361ee", "#f7b731", "#26de81", "#a55eea", "#fc5c65"])
             fig3.update_layout(height=200, margin=dict(l=0, r=0, t=10, b=0), showlegend=False)
-            st.plotly_chart(fig3, use_container_width=True)
+            st.plotly_chart(fig3, width='stretch')

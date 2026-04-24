@@ -59,7 +59,7 @@ with tab1:
                          title="📈 Papers Published Per Year")
             fig.update_layout(height=380, margin=dict(l=0, r=0, t=40, b=0))
             fig.update_traces(fill="tozeroy", line=dict(width=3))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
         with c2:
             # Cumulative trend
@@ -69,7 +69,7 @@ with tab1:
                           title="📈 Cumulative Paper Count")
             fig2.update_layout(height=380, margin=dict(l=0, r=0, t=40, b=0))
             fig2.update_traces(line=dict(width=3))
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width='stretch')
 
 with tab2:
     c1, c2 = st.columns(2)
@@ -99,7 +99,7 @@ with tab2:
                       color="Count", color_continuous_scale="Viridis")
         fig4.update_layout(height=400, margin=dict(l=0, r=0, t=40, b=0),
                            yaxis=dict(autorange="reversed"), showlegend=False)
-        st.plotly_chart(fig4, use_container_width=True)
+        st.plotly_chart(fig4, width='stretch')
 
 with tab3:
     st.markdown("""
@@ -231,7 +231,7 @@ with tab4:
                                 title="📊 Citation Count Distribution")
             fig5.update_layout(xaxis_title="Citation Count", yaxis_title="Number of Papers",
                               height=380, margin=dict(l=0, r=0, t=40, b=0))
-            st.plotly_chart(fig5, use_container_width=True)
+            st.plotly_chart(fig5, width='stretch')
 
         with c2:
             # Log scale scatter: Year vs Citations
@@ -246,4 +246,4 @@ with tab4:
                                   hover_name="Title", log_y=True,
                                   title="📊 Citations vs Year (log scale)")
                 fig6.update_layout(height=380, margin=dict(l=0, r=0, t=40, b=0))
-                st.plotly_chart(fig6, use_container_width=True)
+                st.plotly_chart(fig6, width='stretch')

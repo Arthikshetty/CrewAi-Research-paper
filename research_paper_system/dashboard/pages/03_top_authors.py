@@ -68,7 +68,7 @@ with tab1:
                      color="Papers", color_continuous_scale="Teal")
         fig.update_layout(title="📚 Papers per Author", height=400,
                           margin=dict(l=0, r=0, t=40, b=0), yaxis=dict(autorange="reversed"), showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
     with c2:
         # Citations by Author
@@ -80,7 +80,7 @@ with tab1:
                       color="Citations", color_continuous_scale="Purples")
         fig2.update_layout(title="📊 Citations per Author", height=400,
                            margin=dict(l=0, r=0, t=40, b=0), yaxis=dict(autorange="reversed"), showlegend=False)
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width='stretch')
 
     # Bubble chart: Papers vs Citations
     bubble_df = pd.DataFrame([
@@ -97,7 +97,7 @@ with tab1:
                       size_max=40)
     fig3.update_layout(title="🔬 Papers vs Citations (size = h-index)", height=400,
                        margin=dict(l=0, r=0, t=40, b=0))
-    st.plotly_chart(fig3, use_container_width=True)
+    st.plotly_chart(fig3, width='stretch')
 
 with tab2:
     # Full ranking table

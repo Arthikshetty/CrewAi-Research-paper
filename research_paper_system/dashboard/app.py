@@ -58,16 +58,16 @@ with st.sidebar:
         src_gs = st.checkbox("Google Scholar", value=False)
 
     st.markdown("")
-    run_button = st.button("🚀 Run Analysis", type="primary", use_container_width=True)
+    run_button = st.button("🚀 Run Analysis", type="primary", width='stretch')
 
     st.markdown('<hr style="border-color: rgba(255,255,255,0.08); margin: 0.75rem 0;">', unsafe_allow_html=True)
-    demo_button = st.button("🎮 Load Demo Data", use_container_width=True,
+    demo_button = st.button("🎮 Load Demo Data", width='stretch',
                             help="Load pre-computed results to explore the dashboard without API keys")
 
     # Check for latest_results.json from a previous run
     _latest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "latest_results.json")
     if os.path.exists(_latest_path) and "results" not in st.session_state:
-        load_last = st.button("📂 Load Last Run", use_container_width=True,
+        load_last = st.button("📂 Load Last Run", width='stretch',
                               help="Reload results from your most recent analysis")
     else:
         load_last = False
@@ -182,7 +182,7 @@ if "results" in st.session_state:
                              color="Papers", color_continuous_scale="Blues")
                 fig.update_layout(title="Papers by Source", height=350, showlegend=False,
                                   margin=dict(l=0, r=0, t=40, b=0), yaxis=dict(autorange="reversed"))
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
 
             with c2:
                 years_data = {}
@@ -195,7 +195,7 @@ if "results" in st.session_state:
                     fig2 = px.area(tdf, x="Year", y="Papers", color_discrete_sequence=["#4361ee"])
                     fig2.update_layout(title="Publication Trend", height=350,
                                        margin=dict(l=0, r=0, t=40, b=0))
-                    st.plotly_chart(fig2, use_container_width=True)
+                    st.plotly_chart(fig2, width='stretch')
 
     with tab2:
         c1, c2 = st.columns(2)

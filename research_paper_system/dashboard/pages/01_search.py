@@ -136,7 +136,7 @@ with col_e1:
         df.to_csv(index=False),
         "papers.csv",
         "text/csv",
-        use_container_width=True,
+        width='stretch',
     )
 
 with col_e2:
@@ -155,5 +155,5 @@ with col_e2:
         "\n\n".join(bibtex_lines),
         "papers.bib",
         "text/plain",
-        use_container_width=True,
+        width='stretch',
     )
